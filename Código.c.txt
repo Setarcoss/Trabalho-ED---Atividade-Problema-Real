@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct No {
+    char nome[50];
+    struct No *prox;
+} No;
+
+No *inicio = NULL;
+No *fim = NULL;
+
+ //Cria um novo adiciona um paciente no final da fila
+void cadastrarPaciente() {
+    No *novo = (No *) malloc(sizeof(No));
+
+    if (novo == NULL) {
+        printf("Erro ao reservar memoria.\n");
+        return;
+    }
+
+    printf("Nome do paciente: ");
+    fgets(novo->nome, 50, stdin);
+    novo->nome[strcspn(novo->nome, "\n")] = '\0';
+
+    novo->prox = NULL;
+
+    if (inicio == NULL) {
+        inicio = novo;
+    } else {
+        fim->prox = novo;
+    }
+
+    fim = novo;
+    printf("Paciente cadastrado!\n");
+}
+
+//Percorre a lista e mostra os pacientes na ordem de chegada
+void listarFila() {
+    No *atual = inicio;
+
+    if (atual == NULL) {
+        printf("Nao ha pacientes aguardando.\n");
+        return;
+    }
+
+    printf("\n--- PACIENTES AGUARDANDO ---\n");
+    while (atual != NULL) {
+        printf("%s\n", atual->nome);
+        atual = atual->prox;
+    }
+}
+
+//Chama e remove o primeiro paciente da fila
+void chamarProximo() {
+    No *removido;
+
+    if (inicio == NULL) {
+        printf("A fila esta vazia.\n");
+        return;
+    }
+
+    removido = inicio;
+    printf("Chamando: %s\n", removido->nome);
+
+    inicio = inicio->prox;
+
+    if (inicio == NULL) {
+        fim = NULL;
+    }
+
+    free(removido);
+}
+
+int main() {
+    int opcao;
+
+    do {
+        printf("\n=== SISTEMA DE ATENDIMENTO ===\n");
+        printf("1 - Cadastrar paciente\n");
+        printf("2 - Listar fila\n");
+        printf("3 - Chamar proximo paciente\n");
+        printf("0 - Sair\n");
+        printf("Escolha: ");
+
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                cadastrarPaciente();
+                break;
+            case 2:
+                listarFila();
+                break;
+            case 3:
+                chamarProximo();
+                break;
+            case 0:
+                printf("Encerrando o sistema.\n");
+                break;
+            default:
+                printf("Opcao invalida.\n");
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
+
